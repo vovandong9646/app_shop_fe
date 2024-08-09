@@ -1,5 +1,9 @@
 // ** React Imports
-import { ReactNode, ReactElement } from 'react'
+import { ReactNode, ReactElement, useEffect } from 'react'
+import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
+import authConfig from 'src/configs/auth'
+import auth from 'src/configs/auth'
 
 interface AuthGuardProps {
   children: ReactNode
@@ -8,6 +12,44 @@ interface AuthGuardProps {
 
 const AuthGuard = (props: AuthGuardProps) => {
   const { children, fallback } = props
+
+  const authContext = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    // check page da render chua
+    if (!router.isReady) {
+      return
+    }
+    // check neu chua login
+    if (
+      authContext.user === null &&
+      !window.localStorage.getItem(authConfig.storageTokenKeyName) &&
+      !window.localStorage.getItem('userData')
+    ) {
+      // nếu page trước đó không phải là trang chủ
+      if (router.asPath !== '/') {
+        // sau khi login xong sẽ redirect về chính trang đó
+        router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.asPath }
+        })
+      } else {
+        // sau khi login xong sẽ chuyển về trang chủ
+        router.replace('/login')
+      }
+      // clear thông tin login trước đó
+      window.localStorage.removeItem(authConfig.storageTokenKeyName)
+      window.localStorage.removeItem('userData')
+      authContext.setUser(null)
+    }
+  }, [router.route])
+
+  // vì useEffect chạy sau render, nên children sẽ render trươcs rồi useEffect sẽ chạy, do đó sẽ thấy trang children trươcs rồi mơi redirect sang login
+  // để fix việc này, thì cho nó hiẻn thị cái hình loading là được
+  if (authContext.loading || authContext.user === null) {
+    return fallback
+  }
 
   return <>{children}</>
 }
