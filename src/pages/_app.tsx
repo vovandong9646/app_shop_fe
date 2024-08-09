@@ -36,6 +36,9 @@ import AclGuard from 'src/components/auth/AclGuard'
 import ReactHotToast from 'src/components/react-hot-toast'
 import { useSettings } from 'src/hooks/useSettings'
 import ThemeComponent from 'src/theme/ThemeComponent'
+import { DevSupport } from '@react-buddy/ide-toolbox-next'
+import { ComponentPreviews, useInitial } from 'src/dev'
+import UserLayout from 'src/views/layouts/UserLayout'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -76,7 +79,7 @@ export default function App(props: ExtendedAppProps) {
   const { settings } = useSettings()
 
   // Variables
-  const getLayout = Component.getLayout ?? (page => <>{page}</>)
+  const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   const setConfig = Component.setConfig ?? undefined
 
@@ -121,7 +124,11 @@ export default function App(props: ExtendedAppProps) {
                 <ThemeComponent settings={settings}>
                   <Guard authGuard={authGuard} guestGuard={guestGuard}>
                     <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
-                      {getLayout(<Component {...pageProps} />)}
+                      {getLayout(
+                        <DevSupport ComponentPreviews={ComponentPreviews} useInitialHook={useInitial}>
+                          <Component {...pageProps} />
+                        </DevSupport>
+                      )}
                     </AclGuard>
                   </Guard>
                   <ReactHotToast>

@@ -11,7 +11,7 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     // add new line above comment
     "lines-around-comment": [
-      "error",
+      "warn",
       {
         "beforeLineComment": true,
         "beforeBlockComment": true,
@@ -22,16 +22,16 @@
       }
     ],
     // add new line above return
-    "newline-before-return": "error",
+    "newline-before-return": "warn",
     // add new line below import
     "import/newline-after-import": [
-      "error",
+      "warn",
       {
         "count": 1
       }
     ],
     "@typescript-eslint/ban-types": [
-      "error",
+      "warn",
       {
         "extendDefaults": true,
         "types": {
