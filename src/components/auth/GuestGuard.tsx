@@ -20,7 +20,7 @@ const GuestGuard = (props: GuestGuardProps) => {
       return
     }
     // da login roi
-    if (window.localStorage.getItem(authConfig.storageTokenKeyName) && window.localStorage.getItem('userData')) {
+    if (window.localStorage.getItem(authConfig.accessToken) && window.localStorage.getItem(authConfig.userData)) {
       router.replace({ pathname: '/' })
     }
   }, [router.route])

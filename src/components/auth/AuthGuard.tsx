@@ -24,8 +24,8 @@ const AuthGuard = (props: AuthGuardProps) => {
     // check neu chua login
     if (
       authContext.user === null &&
-      !window.localStorage.getItem(authConfig.storageTokenKeyName) &&
-      !window.localStorage.getItem('userData')
+      !window.localStorage.getItem(authConfig.accessToken) &&
+      !window.localStorage.getItem(authConfig.userData)
     ) {
       // nếu page trước đó không phải là trang chủ
       if (router.asPath !== '/') {
@@ -39,8 +39,8 @@ const AuthGuard = (props: AuthGuardProps) => {
         router.replace('/login')
       }
       // clear thông tin login trước đó
-      window.localStorage.removeItem(authConfig.storageTokenKeyName)
-      window.localStorage.removeItem('userData')
+      window.localStorage.removeItem(authConfig.accessToken)
+      window.localStorage.removeItem(authConfig.userData)
       authContext.setUser(null)
     }
   }, [router.route])
