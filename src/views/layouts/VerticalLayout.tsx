@@ -7,7 +7,8 @@ import IconButton from '@mui/material/IconButton'
 import Badge from '@mui/material/Badge'
 import MenuIcon from '@mui/icons-material/Menu'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import UserDropdown from 'src/components/user-dropdown/UserDropdown'
+import UserDropdown from 'src/views/layouts/components/user-dropdown/UserDropdown'
+import ToggleTheme from 'src/views/layouts/components/toggle-theme/ToggleTheme'
 
 const drawerWidth: number = 240
 
@@ -60,11 +61,13 @@ export default function VerticalLayout({ open, toggleDrawer, isMenuIcon }) {
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
           Dashboard
         </Typography>
+
         <IconButton color='inherit'>
           <Badge badgeContent={4} color='secondary'>
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        <ToggleTheme />
         <UserDropdown />
       </Toolbar>
     </AppBar>
