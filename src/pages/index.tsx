@@ -18,5 +18,6 @@ export default function Home() {
   )
 }
 
-Home.authGuard = true
+Home.guestGuard = false
+Home.authGuard = false
 Home.getLayout = (page: React.ReactElement) => <UserLayoutNoApp>{page}</UserLayoutNoApp>

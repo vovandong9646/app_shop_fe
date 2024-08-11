@@ -1,22 +1,21 @@
 'use client'
-import * as React from 'react'
-import { NextPage } from 'next'
-import Link from 'next/link'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Grid, IconButton, InputAdornment } from '@mui/material'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import CssBaseline from '@mui/material/CssBaseline'
+import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { NextPage } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import IconifyIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-import IconifyIcon from 'src/components/Icon'
-import { useState } from 'react'
-import Image from 'next/image'
-import RegisterLight from '/public/images/register-light.png'
+import * as yup from 'yup'
 import RegisterDark from '/public/images/register-dark.png'
-import { useTheme } from '@mui/material/styles'
+import RegisterLight from '/public/images/register-light.png'
 
 type TProps = {}
 
@@ -209,9 +208,7 @@ const RegisterPage: NextPage<TProps> = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='/login' variant='body2'>
-                    Do you have an account?
-                  </Link>
+                  <Link href='/login'>Do you have an account?</Link>
                 </Grid>
               </Grid>
             </form>

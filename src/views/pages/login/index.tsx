@@ -1,23 +1,22 @@
 'use client'
-import * as React from 'react'
-import { NextPage } from 'next'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment } from '@mui/material'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import CssBaseline from '@mui/material/CssBaseline'
+import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { NextPage } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import IconifyIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-import IconifyIcon from 'src/components/Icon'
-import { useState } from 'react'
-import Image from 'next/image'
-import LoginLight from '/public/images/login-light.png'
-import LoginDark from '/public/images/login-dark.png'
-import { useTheme } from '@mui/material/styles'
-import Link from 'next/link'
 import { useAuth } from 'src/hooks/useAuth'
+import * as yup from 'yup'
+import LoginDark from '/public/images/login-dark.png'
+import LoginLight from '/public/images/login-light.png'
 
 type TProps = {}
 
@@ -171,23 +170,17 @@ const LoginPage: NextPage<TProps> = () => {
                 control={<Checkbox value='remember' color='primary' />}
                 label='Remember me'
                 value={isRemember}
-                onChange={e => {
-                  setRemember(e.target.checked)
-                }}
+                onChange={(e: React.SyntheticEvent) => setRemember((e.target as HTMLInputElement).checked)}
               />
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                 Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='#' variant='body2'>
-                    Forgot password?
-                  </Link>
+                  <Link href='#'>Forgot password?</Link>
                 </Grid>
                 <Grid item>
-                  <Link href='/register' variant='body2'>
-                    {"Don't have an account? Sign Up"}
-                  </Link>
+                  <Link href='/register'>{"Don't have an account? Sign Up"}</Link>
                 </Grid>
               </Grid>
               <Grid container>

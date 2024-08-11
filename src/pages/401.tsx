@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography'
+import BlankLayout from 'src/views/layouts/BlankLayout'
 
 const Error401 = () => {
   return (
@@ -8,4 +9,7 @@ const Error401 = () => {
   )
 }
 
+Error401.getLayout = (children: React.ReactNode) => <BlankLayout>{children}</BlankLayout>
+Error401.guestGuard = false
+Error401.authGuard = false
 export default Error401
