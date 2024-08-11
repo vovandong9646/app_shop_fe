@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography'
+import BlankLayout from 'src/views/layouts/BlankLayout'
 
 const Error500 = () => {
   return (
@@ -8,4 +9,7 @@ const Error500 = () => {
   )
 }
 
+Error500.getLayout = (children: React.ReactNode) => <BlankLayout>{children}</BlankLayout>
+Error500.guestGuard = false
+Error500.authGuard = false
 export default Error500

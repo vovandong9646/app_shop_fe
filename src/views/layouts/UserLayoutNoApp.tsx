@@ -1,21 +1,17 @@
-import * as React from 'react'
-import { styled } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import MuiDrawer from '@mui/material/Drawer'
+import { useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
 import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
+import CssBaseline from '@mui/material/CssBaseline'
+import Toolbar from '@mui/material/Toolbar'
+import * as React from 'react'
 import VerticalLayout from 'src/views/layouts/VerticalLayout'
-import HorizontalLayout from 'src/views/layouts/HorizontalLayout'
 
 type IUserLayout = {
   children: React.ReactNode
 }
 
-export default function UserLayoutNoApp(children: IUserLayout) {
+export default function UserLayoutNoApp({ children }: IUserLayout) {
+  const theme = useTheme()
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -31,39 +27,17 @@ export default function UserLayoutNoApp(children: IUserLayout) {
         }}
       >
         <Toolbar />
-        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: 240
-                }}
-              >
-                {/*<Chart />*/}
-              </Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper
-                sx={{
-                  p: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: 240
-                }}
-              >
-                {/*<Deposits />*/}
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}></Paper>
-            </Grid>
-          </Grid>
+        <Container
+          sx={{
+            m: 4,
+            backgroundColor: theme.palette.background.paper,
+            width: 'calc(100vw - 32px)',
+            maxWidth: 'unset !important',
+            borderRadius: '15px',
+            maxHeight: `100vh - ${theme.mixins.toolbar.minHeight} - 32px`
+          }}
+        >
+          {children}
         </Container>
       </Box>
     </Box>

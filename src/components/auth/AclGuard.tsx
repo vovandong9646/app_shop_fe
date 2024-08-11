@@ -2,12 +2,12 @@
 import { ReactNode } from 'react'
 
 // ** Types
-import { ACLObj, AppAbility, buildAbilityFor } from 'src/configs/acl'
-import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { AbilityContext } from 'src/components/acl/Can'
-import BlankLayout from 'src/views/layouts/BlankLayout'
+import { ACLObj, AppAbility, buildAbilityFor } from 'src/configs/acl'
+import { useAuth } from 'src/hooks/useAuth'
 import NotAuthorized from 'src/pages/401'
+import BlankLayout from 'src/views/layouts/BlankLayout'
 
 interface AclGuardProps {
   children: ReactNode

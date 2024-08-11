@@ -1,21 +1,24 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
+import Logout from '@mui/icons-material/Logout'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
-import { useAuth } from 'src/hooks/useAuth'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Tooltip from '@mui/material/Tooltip'
+import { useRouter } from 'next/router'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ROUTER_CONFIG } from 'src/configs/routers'
+import { useAuth } from 'src/hooks/useAuth'
 
 export default function UserDropdown() {
   // context
   const { user, logout } = useAuth()
+  const router = useRouter()
 
   // hook i18n
   const { t } = useTranslation()
@@ -28,6 +31,13 @@ export default function UserDropdown() {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  // redirect to profile page
+  const redirectMyProfile = () => {
+    router.push(ROUTER_CONFIG.MY_PROFILE)
+    setAnchorEl(null)
+  }
+
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -82,8 +92,8 @@ export default function UserDropdown() {
         <MenuItem onClick={handleClose}>
           <Avatar /> {user?.email || ''}
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
+        <MenuItem onClick={redirectMyProfile}>
+          <Avatar /> My Profile
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
