@@ -1,37 +1,48 @@
 import * as React from 'react'
-import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
+import Box, { BoxProps } from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import IconifyIcon from 'src/components/Icon'
+import { styled } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
+import Tooltip from '@mui/material/Tooltip'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import PersonAdd from '@mui/icons-material/PersonAdd'
-import Settings from '@mui/icons-material/Settings'
-import Logout from '@mui/icons-material/Logout'
-import { useAuth } from 'src/hooks/useAuth'
-import { useTranslation } from 'react-i18next'
 
-export default function UserDropdown() {
-  // context
-  const { user, logout } = useAuth()
+// interface ITranslateProps extends BoxProps {
+//   selected: boolean
+// }
 
+// const CustomChangeTheme = styled(Box)<ITranslateProps>(data => {
+//   const { selected, theme, children } = data
+//   if (selected) {
+//     return {
+//       '&.MuiButtonBase-root .MuiMenuItem-root': {
+//         background: 'red',
+//         width: '100%'
+//       }
+//     }
+//   }
+// })
+
+export default function TranslateDropdown() {
   // hook i18n
-  const { t } = useTranslation()
+  const { i18n } = useTranslation()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-  const handleClose = () => {
+  const handleChangeLang = (lang: string) => {
+    i18n.changeLanguage(lang)
     setAnchorEl(null)
   }
+
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-        <Tooltip title={t('account')}>
+        <Tooltip title={'Change language'}>
           <IconButton
             onClick={handleClick}
             size='small'
@@ -40,7 +51,7 @@ export default function UserDropdown() {
             aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>{user?.avatar}</Avatar>
+            <IconifyIcon icon={'clarity:language-line'} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -48,8 +59,7 @@ export default function UserDropdown() {
         anchorEl={anchorEl}
         id='account-menu'
         open={open}
-        onClose={handleClose}
-        onClick={handleClose}
+        onClick={() => setAnchorEl(null)}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -79,30 +89,12 @@ export default function UserDropdown() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> {user?.email || ''}
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
+        <MenuItem onClick={() => handleChangeLang('vi')} selected={i18n.language === 'vi'}>
+          Tiếng Việt
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize='small' />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize='small' />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={() => logout()}>
-          <ListItemIcon>
-            <Logout fontSize='small' />
-          </ListItemIcon>
-          Logout
+        <MenuItem onClick={() => handleChangeLang('en')} selected={i18n.language === 'en'}>
+          English
         </MenuItem>
       </Menu>
     </React.Fragment>
