@@ -9,6 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import UserDropdown from 'src/views/layouts/components/user-dropdown/UserDropdown'
 import ToggleTheme from 'src/views/layouts/components/toggle-theme/ToggleTheme'
+import TranslateDropdown from 'src/views/layouts/components/translate-dropdown/TranslateDropdown'
+import { useTranslation } from 'react-i18next'
 
 const drawerWidth: number = 240
 
@@ -36,7 +38,14 @@ const AppBar = styled(MuiAppBar, {
   })
 }))
 
-export default function VerticalLayout({ open, toggleDrawer, isMenuIcon }) {
+type VerticalLayoutProps = {
+  open: boolean
+  toggleDrawer: () => void
+  isMenuIcon: boolean
+}
+
+export default function VerticalLayout({ open, toggleDrawer, isMenuIcon }: VerticalLayoutProps) {
+  const { t } = useTranslation()
   return (
     <AppBar position='absolute' open={open}>
       <Toolbar
@@ -59,7 +68,7 @@ export default function VerticalLayout({ open, toggleDrawer, isMenuIcon }) {
           </IconButton>
         )}
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-          Dashboard
+          {t('dashboard')}
         </Typography>
 
         <IconButton color='inherit'>
@@ -67,6 +76,7 @@ export default function VerticalLayout({ open, toggleDrawer, isMenuIcon }) {
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        <TranslateDropdown />
         <ToggleTheme />
         <UserDropdown />
       </Toolbar>
