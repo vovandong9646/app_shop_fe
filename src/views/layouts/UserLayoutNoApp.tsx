@@ -30,10 +30,10 @@ export default function UserLayoutNoApp({ children }: IUserLayout) {
         <Container
           sx={{
             m: 4,
-            backgroundColor: theme.palette.background.paper,
+            // backgroundColor: theme.palette.background.paper,
             width: 'calc(100vw - 32px)',
             maxWidth: 'unset !important',
-            borderRadius: '15px',
+            // borderRadius: '15px',
             maxHeight: `100vh - ${theme.mixins.toolbar.minHeight} - 32px`
           }}
         >
