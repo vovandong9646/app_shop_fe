@@ -8,11 +8,17 @@ import Typography from '@mui/material/Typography'
 import { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useDispatch, useSelector } from 'react-redux'
 import IconifyIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { ROUTER_CONFIG } from 'src/configs/routers'
+import { AppDispatch, RootState } from 'src/stores'
+import { registerAuthAction } from 'src/stores/apps/auth/action'
 import * as yup from 'yup'
 import RegisterDark from '/public/images/register-dark.png'
 import RegisterLight from '/public/images/register-light.png'
@@ -43,12 +49,17 @@ const RegisterPage: NextPage<TProps> = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setConfirmPassword] = useState(false)
   const theme = useTheme()
+  const router = useRouter()
+
+  const dispatch: AppDispatch = useDispatch()
 
   const defaultValues: TDefaultValues = {
     email: '',
     password: '',
     confirmPassword: ''
   }
+
+  const { isSuccess, isError, isLoading, message } = useSelector((state: RootState) => state.auth)
 
   // validate
   const {
@@ -60,7 +71,21 @@ const RegisterPage: NextPage<TProps> = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-  const onSubmit = (data: { email: string; password: string }) => console.log(data)
+  const onSubmit = (data: { email: string; password: string }) => {
+    dispatch(registerAuthAction(data))
+  }
+
+  useEffect(() => {
+    if (message) {
+      if (isError) {
+        toast.error(message)
+      } else if (isSuccess) {
+        toast.success(message)
+
+        router.push(ROUTER_CONFIG.LOGIN)
+      }
+    }
+  }, [isSuccess, isError, message])
 
   return (
     <Box

@@ -25,7 +25,7 @@ const AclGuard = (props: AclGuardProps) => {
   let ability: AppAbility
   // check user đăng nhập rồi, nhưng chưa có aclAbilities thì khởi tạo aclAbilities cho nó
   if (auth.user && !ability) {
-    const permissionUser = auth.user?.role.permissions ?? []
+    const permissionUser = auth.user?.role?.permissions ?? []
     ability = buildAbilityFor(permissionUser, aclAbilities.subject)
   }
   // check neu la guest page/ 404/ 501 / not auth page -> redirect ve children (chinh no)
