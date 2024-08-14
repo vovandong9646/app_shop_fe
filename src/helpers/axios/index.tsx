@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { clearLocalUserData, getLocalUserData, setLocalUserData } from 'src/helpers/storage'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import { NextRouter, useRouter } from 'next/router'
 import { FC } from 'react'
-import { UserDataType } from 'src/contexts/types'
-import { useAuth } from 'src/hooks/useAuth'
 import { CONFIG_API } from 'src/configs/api'
+import { UserDataType } from 'src/contexts/types'
+import { clearLocalUserData, getLocalUserData } from 'src/helpers/storage'
+import { useAuth } from 'src/hooks/useAuth'
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
@@ -57,7 +57,7 @@ const AxiosInterceptor: FC<TAxiosProps> = ({ children }) => {
         const decodedRefreshToken: JwtPayload = jwtDecode(refreshToken)
         if (decodedRefreshToken.exp > Date.now() / 1000) {
           // call api get accessToken với refreshToken
-          console.log('url', `${CONFIG_API.AUTH.INDEX}/refresh-token`)
+
           await axios
             .post(`${CONFIG_API.AUTH.INDEX}/refresh-token`, null, {
               headers: {
