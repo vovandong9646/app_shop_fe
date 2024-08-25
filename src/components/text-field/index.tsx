@@ -1,5 +1,3 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import { TextField, TextFieldProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
@@ -9,8 +7,8 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
       transform: 'none',
       lineHeight: 1.2,
       position: 'relative',
-      marginBottom: theme => theme.spacing(1),
-      fontSize: theme => theme.typography.body2.fontSize
+      marginBottom: (theme: any) => theme.spacing(1),
+      fontSize: (theme: any) => theme.typography.body2.fontSize
     }
   }
 })
