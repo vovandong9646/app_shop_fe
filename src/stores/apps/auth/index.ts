@@ -1,7 +1,7 @@
 // ** Redux Imports
 import { createSlice } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
-import { registerAuthAction } from './action'
+import { registerAuthAction, updateMeAsync } from './action'
 
 interface Redux {
   getState: any
@@ -9,7 +9,7 @@ interface Redux {
 }
 
 const initialState = {
-  isSuccess: true,
+  isSuccess: false,
   isError: false,
   isLoading: false,
   message: '',
@@ -19,17 +19,24 @@ const initialState = {
 export const authSlice = createSlice({
   name: 'auth',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetState: () => initialState
+  },
   extraReducers: builder => {
     builder.addCase(registerAuthAction.pending, (state, action) => {
       state.isLoading = true
-      state.isError = false
-      state.isSuccess = false
-      state.message = ''
-      state.typeError = ''
     }),
       builder.addCase(registerAuthAction.fulfilled, (state, action) => {
-        console.log(action.payload)
+        state.isLoading = false
+        state.isSuccess = !!action.payload?.data?.email
+        state.isError = !action.payload?.data?.email
+        state.message = action.payload?.message
+        state.typeError = action.payload?.typeError
+      }),
+      builder.addCase(updateMeAsync.pending, (state, action) => {
+        state.isLoading = true
+      }),
+      builder.addCase(updateMeAsync.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = !!action.payload?.data?.email
         state.isError = !action.payload?.data?.email
@@ -39,4 +46,5 @@ export const authSlice = createSlice({
   }
 })
 
+export const { resetState } = authSlice.actions
 export default authSlice.reducer

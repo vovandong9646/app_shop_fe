@@ -18,6 +18,7 @@ import CustomTextField from 'src/components/text-field'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import { ROUTER_CONFIG } from 'src/configs/routers'
 import { AppDispatch, RootState } from 'src/stores'
+import { resetState } from 'src/stores/apps/auth'
 import { registerAuthAction } from 'src/stores/apps/auth/action'
 import * as yup from 'yup'
 import RegisterDark from '/public/images/register-dark.png'
@@ -84,6 +85,7 @@ const RegisterPage: NextPage<TProps> = () => {
 
         router.push(ROUTER_CONFIG.LOGIN)
       }
+      dispatch(resetState())
     }
   }, [isSuccess, isError, message])
 

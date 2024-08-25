@@ -32,6 +32,11 @@ export default function UserDropdown() {
     setAnchorEl(null)
   }
 
+  const redirectDoashboard = () => {
+    router.push(ROUTER_CONFIG.HOME)
+    setAnchorEl(null)
+  }
+
   // redirect to profile page
   const redirectMyProfile = () => {
     router.push(ROUTER_CONFIG.MY_PROFILE)
@@ -50,7 +55,7 @@ export default function UserDropdown() {
             aria-haspopup='true'
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>{user?.avatar}</Avatar>
+            <Avatar sx={{ width: 35, height: 35 }} src={user?.avatar} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -89,7 +94,7 @@ export default function UserDropdown() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={redirectDoashboard}>
           <Avatar /> {user?.email || ''}
         </MenuItem>
         <MenuItem onClick={redirectMyProfile}>

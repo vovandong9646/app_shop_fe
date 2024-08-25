@@ -3,33 +3,56 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Avatar, Box, Button, Card, Grid } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { NextPage } from 'next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import IconifyIcon from 'src/components/Icon'
 import CustomTextField from 'src/components/text-field'
 import WrapperFileUpload from 'src/components/wrapper-file-upload'
 import { EMAIL_REG } from 'src/configs/regex'
-import { useAuth } from 'src/hooks/useAuth'
+import { getAuthMe } from 'src/services/auth'
+import { AppDispatch } from 'src/stores'
+import { resetState } from 'src/stores/apps/auth'
+import { updateMeAsync } from 'src/stores/apps/auth/action'
+import { getBase64, splitFullName, toFullName } from 'src/utils/common'
 import * as yup from 'yup'
+import { RootState } from '../../../stores/index'
 
 const schema = yup.object().shape({
   email: yup.string().required().matches(EMAIL_REG, 'Email is not valid'),
   role: yup.string().required(),
   fullName: yup.string().required(),
-  address: yup.string().required(),
-  city: yup.string().required(),
-  phone: yup.string().required(),
-  avatar: yup.string().required()
+  address: yup.string().notRequired(),
+  city: yup.string().notRequired(),
+  phone: yup
+    .string()
+    .notRequired()
+    .min(10, 'Phone number min length is 10')
+    .max(10, 'Phone number max length is 10')
+    .matches(/^(0[3|5|7|8|9])+([0-9]{8})$/, 'Phone number is not valid'),
+  avatar: yup.string().notRequired()
 })
 
 type TDefaultValues = {
   email: string
   role: string
   fullName: string
-  address: string
-  city: string
-  phone: string
-  avatar: string
+  address?: string | null
+  city?: string | null
+  phone?: string | null
+  avatar?: string | null
+}
+
+const defaultValues: TDefaultValues = {
+  email: '',
+  role: '',
+  fullName: '',
+  address: '',
+  city: '',
+  phone: '',
+  avatar: ''
 }
 
 type TProps = {}
@@ -37,21 +60,13 @@ type TProps = {}
 const MyProfilePage: NextPage<TProps> = () => {
   // state
   const theme = useTheme()
-  const { user } = useAuth()
+  const [avatar, setAvatar] = useState('')
+  const [roleId, setRoleId] = useState('')
+  const dispatch: AppDispatch = useDispatch()
+  const { message, isLoading, isSuccess, isError } = useSelector((state: RootState) => state.auth)
 
-  const defaultValues: TDefaultValues = {
-    email: '',
-    role: '',
-    fullName: '',
-    address: '',
-    city: '',
-    phone: '',
-    avatar: ''
-  }
-
-  const handleUploadAvatar = (file: File) => {
-    console.log(file)
-  }
+  // translate
+  const { i18n } = useTranslation()
 
   // validate
   const {
@@ -64,21 +79,67 @@ const MyProfilePage: NextPage<TProps> = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema)
   })
-  const onSubmit = (data: TDefaultValues) => console.log(data)
-
-  useEffect(() => {
-    if (user) {
-      reset({
-        email: user.email,
-        role: user.role?.name,
-        fullName: user.fullName,
-        address: user.address,
-        city: user.city,
-        phone: user.phone,
-        avatar: user.avatar || ''
+  const onSubmit = (data: TDefaultValues) => {
+    const { email, fullName, address, city, phone } = data
+    const { firstName, middleName, lastName } = splitFullName(fullName, i18n.language)
+    dispatch(
+      updateMeAsync({
+        email,
+        role: roleId,
+        firstName,
+        middleName,
+        lastName,
+        address,
+        phoneNumber: phone,
+        avatar
       })
+    )
+  }
+
+  const handleUploadAvatar = async (file: File) => {
+    const base64Avatar = await getBase64(file)
+    setAvatar(base64Avatar)
+  }
+
+  async function fetchData() {
+    try {
+      const res = await getAuthMe()
+      if (!res.typeError) {
+        const user = res.data
+        setRoleId(user.role?._id)
+        setAvatar(user.avatar)
+        reset({
+          email: user.email,
+          role: user.role?.name,
+          fullName: toFullName(user.firstName, user.middleName, user.lastName, i18n.language),
+          address: user.address,
+          city: user.city,
+          phone: user.phoneNumber
+        })
+      }
+    } catch (err) {
+      // setLoading(false)
+      console.log(err)
     }
-  }, [user])
+  }
+
+  // fetch data
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  // display message error or success
+  useEffect(() => {
+    if (message) {
+      if (isError) {
+        toast.error(message)
+      } else if (isSuccess) {
+        toast.success(message)
+        fetchData()
+      }
+      dispatch(resetState())
+    }
+  }, [isSuccess, isError, message])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate autoComplete='false'>
@@ -98,9 +159,27 @@ const MyProfilePage: NextPage<TProps> = () => {
                   gap: 2
                 }}
               >
-                <Avatar sx={{ width: 100, height: 100 }}>
-                  {user && user?.avatar ? user.avatar : <IconifyIcon icon={'ph:user-thin'} fontSize={50} />}
-                </Avatar>
+                {avatar ? (
+                  <Box sx={{ position: 'relative' }}>
+                    <Avatar sx={{ width: 100, height: 100 }} src={avatar} />
+                    <Box
+                      onClick={() => setAvatar('')}
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        cursor: 'pointer',
+                        '&:hover': { color: 'rgba(212, 51, 51, 0.7)' }
+                      }}
+                    >
+                      <IconifyIcon icon={'oi:delete'} />
+                    </Box>
+                  </Box>
+                ) : (
+                  <Avatar sx={{ width: 100, height: 100 }}>
+                    {avatar ? avatar : <IconifyIcon icon={'ph:user-thin'} fontSize={50} />}
+                  </Avatar>
+                )}
                 <WrapperFileUpload
                   uploadFunc={handleUploadAvatar}
                   objectAcceptFile={{ 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] }}
@@ -117,6 +196,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <CustomTextField
+                    disabled={true}
                     label={'Email *'}
                     variant={'outlined'}
                     fullWidth
@@ -223,7 +303,10 @@ const MyProfilePage: NextPage<TProps> = () => {
                     fullWidth
                     placeholder='Input Your Phone ...'
                     onBlur={onBlur}
-                    onChange={onChange}
+                    onChange={e => {
+                      const replaceNumber = e.target.value.replace(/\D/g, '')
+                      onChange(replaceNumber)
+                    }}
                     value={value}
                     error={Boolean(errors?.phone)}
                     helperText={errors?.phone?.message}
